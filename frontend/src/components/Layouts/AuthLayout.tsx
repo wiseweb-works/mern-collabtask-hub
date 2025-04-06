@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import UI from "../../assets/ui-img.png";
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (
@@ -10,7 +11,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
         {children}
       </div>
       <div className="hidden md:flex w-[40vw] h-screen items-center bg-blue-50 bg-[url('/bgimg.jpg')] bg-cover bg-no-repeat bg-center overflow-hidden p-8">
-        {/* <img src="" alt="ui-img" className="" /> */}
+        <img src={UI} alt="ui-img" className="" />
       </div>
     </div>
   );

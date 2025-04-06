@@ -1,9 +1,13 @@
-import { useState } from "react";
-import AuthLayout from "../../components/layouts/AuthLayout";
+import { useContext, useState } from "react";
+import AuthLayout from "../../components/Layouts/AuthLayout";
 import { validateEmail } from "../../utils/helper";
-import ProfilePhotoSelector from "../../components/inputs/ProfilePhotoSelector";
-import Input from "../../components/inputs/Input";
-import { Link } from "react-router";
+import ProfilePhotoSelector from "../../components/Inputs/ProfilePhotoSelector";
+import Input from "../../components/Inputs/Input";
+import { Link, useNavigate } from "react-router";
+import { API_PATH } from "../../utils/apiPath";
+import axiosInstance from "../../utils/axiosInstance";
+import { UserContext } from "../../context/UserContext";
+import uploadImage from "../../utils/uploadImage";
 
 const SignUp = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -12,10 +16,14 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [adminInviteToken, setAdminInviteToken] = useState("");
 
+  const { updateUser } = useContext(UserContext);
+  const navigate = useNavigate();
   const [error, setError] = useState(null);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    let profileImageUrl = "";
 
     if (!validateEmail(email)) {
       setError("Please enter a valid email address");
@@ -33,6 +41,39 @@ const SignUp = () => {
     }
 
     setError("");
+
+    try {
+      if (profilePic) {
+        const imgUploadRes = await uploadImage(profilePic);
+        profileImageUrl = imgUploadRes.imageUrl || "";
+        const response = await axiosInstance.post(API_PATH.AUTH.REGISTER, {
+          name: fullName,
+          email,
+          password,
+          profileImageUrl,
+          adminInviteToken,
+        });
+
+        const { token, role } = response.data;
+
+        if (token) {
+          localStorage.setItem("token", token);
+          updateUser(response.data);
+
+          if (role === "admin") {
+            navigate("/admin/dashboard");
+          } else {
+            navigate("/user/dashboard");
+          }
+        }
+      }
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    }
   };
 
   return (

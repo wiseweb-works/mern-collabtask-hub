@@ -10,6 +10,7 @@ import {
 
 import { MyTasks, UserDashboard, ViewTaskDetails } from "../pages/User";
 import UserProvider from "../context/UserContext";
+import Root from "../pages/Root";
 
 const AppRouter = () => {
   return (
@@ -36,6 +37,8 @@ const AppRouter = () => {
               element={<ViewTaskDetails />}
             />
           </Route>
+
+          <Route path="/" element={<Root />} />
         </Routes>
       </BrowserRouter>
     </UserProvider>
