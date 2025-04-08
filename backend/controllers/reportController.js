@@ -54,7 +54,7 @@ const exportTaskReports = async (req, res) => {
 
 const exportUsersReports = async (req, res) => {
   try {
-    const user = await User.find().select("name email _id").lean();
+    const users = await User.find().select("name email _id").lean();
     const userTasks = await Task.find().populate(
       "assignedTo",
       "name email _id"
@@ -63,6 +63,7 @@ const exportUsersReports = async (req, res) => {
     const userTaskMap = {};
     users.forEach((user) => {
       userTaskMap[user._id] = {
+        _id: user._id,
         name: user.name,
         email: user.email,
         taskCount: 0,
@@ -74,15 +75,15 @@ const exportUsersReports = async (req, res) => {
 
     userTasks.forEach((task) => {
       if (task.assignedTo) {
-        task.assignedTo.forEach((assignedUser) => {
-          if (userTaskMap[assignedUser._id]) {
-            userTaskMap[assignedUser._id].taskCount++;
+        task.assignedTo.forEach((user) => {
+          if (userTaskMap[user._id]) {
+            userTaskMap[user._id].taskCount += 1;
             if (task.status === "Pending") {
-              userTaskMap[assignedUser._id].pendingTasks++;
+              userTaskMap[user._id].pendingTasks += 1;
             } else if (task.status === "In Progress") {
-              userTaskMap[assignedUser._id].inProgressTasks++;
+              userTaskMap[user._id].inProgressTasks += 1;
             } else if (task.status === "Completed") {
-              userTaskMap[assignedUser._id].completedTasks++;
+              userTaskMap[user._id].completedTasks += 1;
             }
           }
         });
@@ -91,14 +92,17 @@ const exportUsersReports = async (req, res) => {
 
     const workbook = new excelJS.Workbook();
     const worksheet = workbook.addWorksheet("User Task Report");
+
     worksheet.columns = [
+      { header: "User ID", key: "_id", width: 25 },
       { header: "User Name", key: "name", width: 30 },
-      { header: "Email", key: "email", width: 40 },
-      { header: "Total Tasks", key: "taskCount", width: 20 },
+      { header: "Email", key: "email", width: 50 },
+      { header: "Total Assigned Tasks", key: "taskCount", width: 20 },
       { header: "Pending Tasks", key: "pendingTasks", width: 20 },
       { header: "In Progress Tasks", key: "inProgressTasks", width: 20 },
       { header: "Completed Tasks", key: "completedTasks", width: 20 },
     ];
+
     Object.values(userTaskMap).forEach((user) => {
       worksheet.addRow(user);
     });
@@ -109,7 +113,7 @@ const exportUsersReports = async (req, res) => {
     );
     res.setHeader(
       "Content-Disposition",
-      'attachment; filename="users_report.xlsx"'
+      "attachment; filename=user_task_report.xlsx"
     );
 
     return workbook.xlsx.write(res).then(() => {
@@ -118,7 +122,7 @@ const exportUsersReports = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error exporting tasks", error: error.message });
+      .json({ message: "Error exporting user report", error: error.message });
   }
 };
 
