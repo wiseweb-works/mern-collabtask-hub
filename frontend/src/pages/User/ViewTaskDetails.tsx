@@ -11,9 +11,20 @@ import Attachment from "../../components/Attachment";
 
 const ViewTaskDetails = () => {
   const { id } = useParams();
-  const [task, setTask] = useState(null);
+  interface Task {
+    title: string;
+    status: string;
+    description: string;
+    priority: string;
+    dueDate: string;
+    assignedTo: { profileImageUrl: string }[];
+    todoChecklist: { text: string; completed: boolean }[];
+    attachments: string[];
+  }
 
-  const getStatusTagColor = (status) => {
+  const [task, setTask] = useState<Task | null>(null);
+
+  const getStatusTagColor = (status: string) => {
     switch (status) {
       case "In Progress":
         return "text-cyan-500 bg-cyan-50 border border-cyan-500/10";
@@ -28,6 +39,8 @@ const ViewTaskDetails = () => {
 
   const getTaskByID = async () => {
     try {
+      if (!id) return;
+
       const response = await axiosInstance.get(
         API_PATH.TASKS.GET_TASK_BY_ID(id)
       );
@@ -41,16 +54,25 @@ const ViewTaskDetails = () => {
     }
   };
 
-  const updateTodoChecklist = async (index) => {
-    const todoChecklist = [...task?.todoChecklist];
-    const taskId = id;
+  interface TodoItem {
+    text: string;
+    completed: boolean;
+  }
+
+  interface TodoUpdateResponse {
+    task: Task;
+  }
+
+  const updateTodoChecklist = async (index: number): Promise<void> => {
+    const todoChecklist = [...(task?.todoChecklist || [])] as TodoItem[];
+    const taskId = id as string;
 
     if (todoChecklist && todoChecklist[index]) {
       todoChecklist[index].completed = !todoChecklist[index].completed;
     }
 
     try {
-      const response = await axiosInstance.put(
+      const response = await axiosInstance.put<TodoUpdateResponse>(
         API_PATH.TASKS.UPDATE_TODO_CHECKLIST(taskId),
         { todoChecklist }
       );
@@ -59,12 +81,12 @@ const ViewTaskDetails = () => {
       } else {
         todoChecklist[index].completed = !todoChecklist[index].completed;
       }
-    } catch (error) {
+    } catch {
       todoChecklist[index].completed = !todoChecklist[index].completed;
     }
   };
 
-  const handleClick = (link) => {
+  const handleClick = (link: string): void => {
     if (!/^https?:\/\//i.test(link)) {
       link = "https://" + link;
     }

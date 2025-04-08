@@ -1,6 +1,15 @@
 import StatCard from "./StatCard";
 
-const UserCard = ({ userInfo }) => {
+interface UserInfo {
+  profileImageUrl: string;
+  name: string;
+  email: string;
+  pendingTasks: number;
+  inProgressTasks: number;
+  completedTasks: number;
+}
+
+const UserCard = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
     <div className="user-card p-2">
       <div className="flex items-center justify-between">

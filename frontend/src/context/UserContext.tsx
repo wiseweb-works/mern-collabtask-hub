@@ -1,11 +1,28 @@
-import { useState, createContext, useEffect, use } from "react";
+import { useState, createContext, useEffect } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATH } from "../utils/apiPath";
+import { ReactNode } from "react";
 
-export const UserContext = createContext();
+interface UserContextType {
+  user: { token: string } | null;
+  loading: boolean;
+  updateUser: (userData: { token: string }) => void;
+  clearUser: () => void;
+}
 
-const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+export const UserContext = createContext<UserContextType>({
+  user: null,
+  loading: true,
+  updateUser: () => {},
+  clearUser: () => {},
+});
+
+const UserProvider = ({ children }: { children: ReactNode }) => {
+  interface User {
+    token: string;
+  }
+
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +38,7 @@ const UserProvider = ({ children }) => {
       try {
         const response = await axiosInstance.get(API_PATH.AUTH.GET_PROFILE);
         setUser(response.data);
-      } catch (error) {
+      } catch {
         console.error("User not authenticated");
         clearUser();
       } finally {
@@ -31,7 +48,7 @@ const UserProvider = ({ children }) => {
     fetchUser();
   }, []);
 
-  const updateUser = (userData) => {
+  const updateUser = (userData: { token: string }) => {
     setUser(userData);
     localStorage.setItem("token", userData.token);
     setLoading(false);

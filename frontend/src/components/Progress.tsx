@@ -1,4 +1,9 @@
-const Progress = ({ progress, status }) => {
+interface ProgressProps {
+  progress: number;
+  status: string;
+}
+
+const Progress = ({ progress, status }: ProgressProps) => {
   const getColor = () => {
     switch (status) {
       case "In Progress":

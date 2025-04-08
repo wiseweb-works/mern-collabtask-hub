@@ -3,12 +3,29 @@ import { UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router";
 import { SIDE_MENU_DATA, SIDE_MENU_USER_DATA } from "../../utils/data";
 
-const SideMenu = ({ activeMenu }) => {
+interface MenuItem {
+  label: string;
+  path: string;
+}
+
+interface SideMenuProps {
+  activeMenu: string;
+}
+
+interface User {
+  token: string;
+  profileImageUrl?: string;
+  name?: string;
+  email?: string;
+  role?: string;
+}
+
+const SideMenu = ({ activeMenu }: SideMenuProps) => {
   const { user, clearUser } = useContext(UserContext);
-  const [sideMenuData, setSideMenuData] = useState([]);
+  const [sideMenuData, setSideMenuData] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
 
-  const handleClick = (route) => {
+  const handleClick = (route: string) => {
     if (route === "logout") {
       handleLogout();
       return;

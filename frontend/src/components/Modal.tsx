@@ -1,4 +1,14 @@
-const Modal = ({ children, isOpen, onClose, title }) => {
+const Modal = ({
+  children,
+  isOpen,
+  onClose,
+  title,
+}: {
+  children: React.ReactNode;
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+}) => {
   if (!isOpen) return;
 
   return (

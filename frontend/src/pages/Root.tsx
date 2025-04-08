@@ -3,7 +3,10 @@ import { UserContext } from "../context/UserContext";
 import { Navigate, Outlet } from "react-router";
 
 const Root = () => {
-  const { user, loading } = useContext(UserContext);
+  const { user, loading } = useContext(UserContext) as {
+    user: { role: string } | null;
+    loading: boolean;
+  };
 
   if (loading) return <Outlet />;
 

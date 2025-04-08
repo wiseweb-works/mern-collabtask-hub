@@ -6,6 +6,7 @@ import { validateEmail } from "../../utils/helper";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
 import { UserContext } from "../../context/UserContext";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -48,7 +49,11 @@ const Login = () => {
         }
       }
     } catch (error) {
-      if (error.response && error.response.data.message) {
+      if (
+        axios.isAxiosError(error) &&
+        error.response &&
+        error.response.data.message
+      ) {
         setError(error.response.data.message);
       } else {
         setError("Something went wrong. Please try again.");
@@ -66,7 +71,9 @@ const Login = () => {
         <form onSubmit={handleLogin}>
           <Input
             value={email}
-            onChange={({ target }) => setEmail(target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
             label="Email Address"
             placeholder="john@example.com"
             type="text"
@@ -74,7 +81,9 @@ const Login = () => {
 
           <Input
             value={password}
-            onChange={({ target }) => setPassword(target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
             label="Password"
             placeholder="Min 8 Characters"
             type="password"
@@ -99,6 +108,3 @@ const Login = () => {
 };
 
 export default Login;
-function updateUser(data: any) {
-  throw new Error("Function not implemented.");
-}

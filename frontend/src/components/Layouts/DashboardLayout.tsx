@@ -3,7 +3,13 @@ import { UserContext } from "../../context/UserContext";
 import SideMenu from "./SideMenu";
 import Navbar from "./Navbar";
 
-const DashboardLayout = ({ children, activeMenu }) => {
+const DashboardLayout = ({
+  children,
+  activeMenu,
+}: {
+  children: React.ReactNode;
+  activeMenu: string;
+}) => {
   const { user } = useContext(UserContext);
   return (
     <div className="">

@@ -1,4 +1,9 @@
-const DeleteAlert = ({ content, onDelete }) => {
+interface DeleteAlertProps {
+  content: string;
+  onDelete: () => void;
+}
+
+const DeleteAlert = ({ content, onDelete }: DeleteAlertProps) => {
   return (
     <div>
       <p className="text-sm">{content}</p>

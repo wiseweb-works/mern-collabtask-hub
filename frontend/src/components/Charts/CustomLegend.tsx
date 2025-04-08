@@ -1,4 +1,9 @@
-const CustomLegend = ({ payload }) => {
+interface LegendPayload {
+  color: string;
+  value: string;
+}
+
+const CustomLegend = ({ payload }: { payload: LegendPayload[] }) => {
   return (
     <div className="flex flex-wrap justify-center gap-2 mt-4 space-x-6">
       {payload.map((entry, index) => (

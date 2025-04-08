@@ -2,7 +2,15 @@ import { useState } from "react";
 import { HiMiniPlus, HiOutlineTrash } from "react-icons/hi2";
 import { LuPaperclip } from "react-icons/lu";
 
-const AddAttachmentsInput = ({ attachments, setAttachments }) => {
+interface AddAttachmentsInputProps {
+  attachments: string[];
+  setAttachments: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const AddAttachmentsInput: React.FC<AddAttachmentsInputProps> = ({
+  attachments,
+  setAttachments,
+}) => {
   const [option, setOption] = useState("");
 
   const handleAddOption = () => {
@@ -12,7 +20,7 @@ const AddAttachmentsInput = ({ attachments, setAttachments }) => {
     }
   };
 
-  const handleDeleteOption = (index) => {
+  const handleDeleteOption = (index: number) => {
     const UpdatedArr = attachments.filter((_, idx) => idx !== index);
     setAttachments(UpdatedArr);
   };

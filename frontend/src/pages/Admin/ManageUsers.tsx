@@ -7,7 +7,18 @@ import UserCard from "../../components/Cards/UserCard";
 import toast from "react-hot-toast";
 
 const ManageUsers = () => {
-  const [allUsers, setAllUsers] = useState([]);
+  interface User {
+    _id: string;
+    profileImageUrl: string;
+    name: string;
+    email: string;
+    pendingTasks: number;
+    inProgressTasks: number;
+    completedTasks: number;
+    role: string;
+  }
+
+  const [allUsers, setAllUsers] = useState<User[]>([]);
 
   const getAllUsers = async () => {
     try {

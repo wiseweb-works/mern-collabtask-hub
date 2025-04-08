@@ -1,4 +1,11 @@
-const InfoCard = ({ icon, label, value, color }) => {
+interface InfoCardProps {
+  icon?: React.ReactNode;
+  label: string;
+  value: string;
+  color: string;
+}
+
+const InfoCard: React.FC<InfoCardProps> = ({ label, value, color }) => {
   return (
     <div className="flex items-center gap-3">
       <div className={`w-2 md:w-2 h-3 md:h-5 ${color} rounded-full`} />

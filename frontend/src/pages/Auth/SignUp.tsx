@@ -8,6 +8,7 @@ import { API_PATH } from "../../utils/apiPath";
 import axiosInstance from "../../utils/axiosInstance";
 import { UserContext } from "../../context/UserContext";
 import uploadImage from "../../utils/uploadImage";
+import axios from "axios";
 
 const SignUp = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -18,7 +19,7 @@ const SignUp = () => {
 
   const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,7 +69,11 @@ const SignUp = () => {
         }
       }
     } catch (error) {
-      if (error.response && error.response.data.message) {
+      if (
+        axios.isAxiosError(error) &&
+        error.response &&
+        error.response.data.message
+      ) {
         setError(error.response.data.message);
       } else {
         setError("Something went wrong. Please try again.");
@@ -89,14 +94,18 @@ const SignUp = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               value={fullName}
-              onChange={({ target }) => setFullName(target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setFullName(e.target.value)
+              }
               label="Full Name"
               placeholder="John Doe"
               type="text"
             />
             <Input
               value={email}
-              onChange={({ target }) => setEmail(target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEmail(e.target.value)
+              }
               label="Email Address"
               placeholder="john@example.com"
               type="text"
@@ -104,7 +113,9 @@ const SignUp = () => {
 
             <Input
               value={password}
-              onChange={({ target }) => setPassword(target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
               label="Password"
               placeholder="Min 8 Characters"
               type="password"
@@ -112,7 +123,9 @@ const SignUp = () => {
 
             <Input
               value={adminInviteToken}
-              onChange={({ target }) => setAdminInviteToken(target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setAdminInviteToken(e.target.value)
+              }
               label="Admin Invite Token"
               placeholder="6 Digit Code"
               type="text"

@@ -1,4 +1,19 @@
-const TaskStatusTabs = ({ tabs, activeTab, setActiveTab }) => {
+interface Tab {
+  label: string;
+  count: number;
+}
+
+interface TaskStatusTabsProps {
+  tabs: Tab[];
+  activeTab: string;
+  setActiveTab: (label: string) => void;
+}
+
+const TaskStatusTabs = ({
+  tabs,
+  activeTab,
+  setActiveTab,
+}: TaskStatusTabsProps) => {
   return (
     <div className="my-2">
       <div className="flex">

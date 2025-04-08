@@ -9,7 +9,12 @@ import {
 import CustomTooltip from "./CustomTooltip";
 import CustomLegend from "./CustomLegend";
 
-const CustomPieChart = ({ data, colors }) => {
+interface CustomPieChartProps {
+  data: { status: string; count: number }[];
+  colors: string[];
+}
+
+const CustomPieChart: React.FC<CustomPieChartProps> = ({ data, colors }) => {
   return (
     <ResponsiveContainer width="100%" height={325}>
       <PieChart>
@@ -23,7 +28,7 @@ const CustomPieChart = ({ data, colors }) => {
           innerRadius={100}
           labelLine={false}
         >
-          {data.map((entry, index) => (
+          {data.map((_entry, index) => (
             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
           ))}
         </Pie>

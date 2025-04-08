@@ -1,4 +1,14 @@
-const TodoChecklist = ({ text, isChecked, onChange }) => {
+interface TodoChecklistProps {
+  text: string;
+  isChecked: boolean;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const TodoChecklist: React.FC<TodoChecklistProps> = ({
+  text,
+  isChecked,
+  onChange,
+}) => {
   return (
     <div className="flex items-center gap-3 p-3">
       <input

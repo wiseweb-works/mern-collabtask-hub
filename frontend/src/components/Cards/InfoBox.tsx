@@ -1,4 +1,9 @@
-const InfoBox = ({ label, value }) => {
+interface InfoBoxProps {
+  label: string;
+  value: string | number;
+}
+
+const InfoBox = ({ label, value }: InfoBoxProps) => {
   return (
     <>
       <label className="text-xs font-medium text-slate-500">{label}</label>

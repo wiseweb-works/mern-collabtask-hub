@@ -1,4 +1,10 @@
-const StatCard = ({ label, count, status }) => {
+interface StatCardProps {
+  label: string;
+  count: number;
+  status: "In Progress" | "Completed" | string;
+}
+
+const StatCard: React.FC<StatCardProps> = ({ label, count, status }) => {
   const getStatusTagColor = () => {
     switch (status) {
       case "In Progress":

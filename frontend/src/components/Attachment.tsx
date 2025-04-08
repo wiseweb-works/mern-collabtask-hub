@@ -1,6 +1,12 @@
 import { LuSquareArrowOutUpRight } from "react-icons/lu";
 
-const Attachment = ({ link, index, onClick }) => {
+interface AttachmentProps {
+  link: string;
+  index: number;
+  onClick: () => void;
+}
+
+const Attachment = ({ link, index, onClick }: AttachmentProps) => {
   return (
     <div
       className="flex justify-between bg-gray-50 border border-gray-100 px-3 py-2 rounded-md mb-3 mt-2 cursor-pointer"

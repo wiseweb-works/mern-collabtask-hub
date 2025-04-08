@@ -13,13 +13,22 @@ import TodoListInput from "../../components/Inputs/TodoListInput";
 import AddAttachmentsInput from "../../components/Inputs/AddAttachmentsInput";
 import Modal from "../../components/Modal";
 import DeleteAlert from "../../components/DeleteAlert";
+import axios from "axios";
 
 const CreateTask = () => {
   const location = useLocation();
   const { taskId } = location.state || {};
   const navigate = useNavigate();
 
-  const [taskData, setTaskData] = useState({
+  const [taskData, setTaskData] = useState<{
+    title: string;
+    description: string;
+    priority: string;
+    dueDate: string | null;
+    assignedTo: string[];
+    todoChecklist: string[];
+    attachments: string[];
+  }>({
     title: "",
     description: "",
     priority: "Low",
@@ -29,14 +38,18 @@ const CreateTask = () => {
     attachments: [],
   });
 
-  const [currentTask, setCurrentTask] = useState(null);
+  interface Task {
+    todoChecklist: { text: string; completed: boolean }[];
+  }
 
-  const [error, setError] = useState("");
+  const [currentTask, setCurrentTask] = useState<Task | null>(null);
+
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
 
-  const handleValueChange = (key, value) => {
+  const handleValueChange = (key: keyof typeof taskData, value: any) => {
     setTaskData((prevData) => ({ ...prevData, [key]: value }));
   };
 
@@ -60,9 +73,11 @@ const CreateTask = () => {
         completed: false,
       }));
 
-      const response = await axiosInstance.post(API_PATH.TASKS.CREATE_TASK, {
+      await axiosInstance.post(API_PATH.TASKS.CREATE_TASK, {
         ...taskData,
-        dueDate: new Date(taskData.dueDate).toISOString(),
+        dueDate: taskData.dueDate
+          ? new Date(taskData.dueDate).toISOString()
+          : null,
         todoChecklist: todolist,
       });
 
@@ -91,14 +106,13 @@ const CreateTask = () => {
         };
       });
 
-      const response = await axiosInstance.put(
-        API_PATH.TASKS.UPDATE_TASK(taskId),
-        {
-          ...taskData,
-          dueDate: new Date(taskData.dueDate).toISOString(),
-          todoChecklist: todolist,
-        }
-      );
+      await axiosInstance.put(API_PATH.TASKS.UPDATE_TASK(taskId), {
+        ...taskData,
+        dueDate: taskData.dueDate
+          ? new Date(taskData.dueDate).toISOString()
+          : null,
+        todoChecklist: todolist,
+      });
       toast.success("Task Updated Successfully");
     } catch (error) {
       console.error("Error creating tasks:", error);
@@ -144,7 +158,7 @@ const CreateTask = () => {
     createTask();
   };
 
-  const getTaskDetailsByID = async () => {
+  const getTaskDetailsByID = async (taskId?: any) => {
     try {
       const response = await axiosInstance.get(
         API_PATH.TASKS.GET_TASK_BY_ID(taskId)
@@ -153,16 +167,20 @@ const CreateTask = () => {
         const taskInfo = response.data;
         setCurrentTask(taskInfo);
 
-        setTaskData((prevState) => ({
+        setTaskData(() => ({
           title: taskInfo.title,
           description: taskInfo.description,
           priority: taskInfo.priority,
           dueDate: taskInfo.dueDate
             ? moment(taskInfo.dueDate).format("YYYY-MM-DD")
             : null,
-          assignedTo: taskInfo?.assignedTo?.map((item) => item?._id) || [],
+          assignedTo:
+            taskInfo?.assignedTo?.map((item: { _id: string }) => item._id) ||
+            [],
           todoChecklist:
-            taskInfo?.todoChecklist?.map((item) => item?.text) || [],
+            taskInfo?.todoChecklist?.map(
+              (item: { text: string }) => item.text
+            ) || [],
           attachments: taskInfo?.attachments || [],
         }));
       }
@@ -180,7 +198,8 @@ const CreateTask = () => {
     } catch (error) {
       console.error(
         "Error deleting expense:",
-        error.response?.data?.message || error.message
+        (axios.isAxiosError(error) && error.response?.data?.message) ||
+          String(error)
       );
     }
   };
@@ -252,7 +271,9 @@ const CreateTask = () => {
                 <SelectDropdown
                   options={PRIORTY_DATA}
                   value={taskData.priority}
-                  onChange={(value) => handleValueChange("priority", value)}
+                  onChange={(value: string) =>
+                    handleValueChange("priority", value)
+                  }
                   placeholder="Select Priority"
                 />
               </div>
@@ -265,7 +286,7 @@ const CreateTask = () => {
                 <input
                   placeholder="Create APP UI"
                   className="form-input"
-                  value={taskData.dueDate}
+                  value={taskData.dueDate || ""}
                   onChange={({ target }) =>
                     handleValueChange("dueDate", target.value)
                   }
@@ -280,7 +301,7 @@ const CreateTask = () => {
 
                 <SelectUsers
                   selectedUsers={taskData.assignedTo}
-                  setSelectedUsers={(value) => {
+                  setSelectedUsers={(value: string[]) => {
                     handleValueChange("assignedTo", value);
                   }}
                 />
@@ -293,8 +314,8 @@ const CreateTask = () => {
               </label>
 
               <TodoListInput
-                todoList={taskData?.todoChecklist}
-                setTodoList={(value) =>
+                todoList={taskData?.todoChecklist as string[]}
+                setTodoList={(value: string[]) =>
                   handleValueChange("todoChecklist", value)
                 }
               />
@@ -305,7 +326,7 @@ const CreateTask = () => {
               </label>
               <AddAttachmentsInput
                 attachments={taskData?.attachments}
-                setAttachments={(value) =>
+                setAttachments={(value: string[]) =>
                   handleValueChange("attachments", value)
                 }
               />

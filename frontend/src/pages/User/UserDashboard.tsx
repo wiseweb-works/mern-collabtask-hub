@@ -19,18 +19,66 @@ const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"];
 const UserDashboard = () => {
   useUserAuth();
 
-  const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext) as {
+    user: { name?: string; token: string } | null;
+  };
   const navigate = useNavigate();
 
-  const [dashboardData, setDashboardData] = useState(null);
-  const [pieChartData, setPieChartData] = useState([]);
-  const [barChartData, setBarChartData] = useState([]);
+  interface DashboardData {
+    charts?: {
+      taskDistribution?: {
+        All?: number;
+        Pending?: number;
+        InProgress?: number;
+        Completed?: number;
+      };
+      taskPriorityLevels?: {
+        Low?: number;
+        Medium?: number;
+        High?: number;
+      };
+    };
+    recentTasks?: Array<string>;
+  }
 
-  const prepareChartData = (data) => {
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null
+  );
+  const [pieChartData, setPieChartData] = useState<TaskDistributionData[]>([]);
+  const [barChartData, setBarChartData] = useState<PriorityLevelData[]>([]);
+
+  interface TaskDistribution {
+    Pending: number;
+    InProgress: number;
+    Completed: number;
+  }
+
+  interface TaskPriorityLevels {
+    Low: number;
+    Medium: number;
+    High: number;
+  }
+
+  interface TaskDistributionData {
+    status: string;
+    count: number;
+  }
+
+  interface PriorityLevelData {
+    priority: string;
+    count: number;
+  }
+
+  const prepareChartData = (
+    data: {
+      taskDistribution?: TaskDistribution;
+      taskPriorityLevels?: TaskPriorityLevels;
+    } | null
+  ) => {
     const taskDistribution = data?.taskDistribution || null;
     const taskPriorityLevel = data?.taskPriorityLevels || null;
 
-    const taskDistributionData = [
+    const taskDistributionData: TaskDistributionData[] = [
       { status: "Pending", count: taskDistribution?.Pending || 0 },
       { status: "In Progress", count: taskDistribution?.InProgress || 0 },
       { status: "Completed", count: taskDistribution?.Completed || 0 },
@@ -38,7 +86,7 @@ const UserDashboard = () => {
 
     setPieChartData(taskDistributionData);
 
-    const PriorityLevelData = [
+    const PriorityLevelData: PriorityLevelData[] = [
       { priority: "Low", count: taskPriorityLevel?.Low || 0 },
       { priority: "Medium", count: taskPriorityLevel?.Medium || 0 },
       { priority: "High", count: taskPriorityLevel?.High || 0 },
@@ -76,7 +124,9 @@ const UserDashboard = () => {
       <div className="card my-5">
         <div>
           <div className="col-span-3">
-            <h2 className="text-xl md:text-2xl">Good Morning! {user?.name}</h2>
+            <h2 className="text-xl md:text-2xl">
+              Good Morning! {user?.name || "User"}
+            </h2>
             <p className="text-xs md:text-[13px] text-gray-400 mt-1.5">
               {moment().format("dddd Do MM YYYY")}
             </p>

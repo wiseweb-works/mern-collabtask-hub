@@ -1,4 +1,9 @@
-const CustomTooltip = ({ active, payload }) => {
+import { TooltipProps } from "recharts";
+
+const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
+  active,
+  payload,
+}) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white shadow-md rounded-lg p-2 border border-gray-300">

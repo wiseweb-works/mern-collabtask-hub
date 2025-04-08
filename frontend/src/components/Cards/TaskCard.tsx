@@ -3,6 +3,8 @@ import AvatarGroup from "../AvatarGroup";
 import { LuPaperclip } from "react-icons/lu";
 import moment from "moment";
 
+import { MouseEventHandler } from "react";
+
 const TaskCard = ({
   title,
   description,
@@ -16,6 +18,19 @@ const TaskCard = ({
   completedTodoCount,
   todoChecklist,
   onClick,
+}: {
+  title: string;
+  description: string;
+  priority: string;
+  status: string;
+  progress: number;
+  createdAt: string | Date;
+  dueDate: string | Date;
+  assignedTo: string[];
+  attachmentCount: number;
+  completedTodoCount: number;
+  todoChecklist: string[];
+  onClick: MouseEventHandler<HTMLDivElement>;
 }) => {
   const getStatusTagColor = () => {
     switch (status) {

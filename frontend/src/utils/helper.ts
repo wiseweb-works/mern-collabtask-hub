@@ -3,7 +3,7 @@ export const validateEmail = (email: string) => {
   return regex.test(email);
 };
 
-export const addThousandSeperator = (num) => {
+export const addThousandSeperator = (num: number | null) => {
   if (num == null || isNaN(num)) return "";
 
   const [integerPart, frationalPart] = num.toString().split(".");
