@@ -34,6 +34,10 @@ This is a full-featured **task management hub** built with a **React + Vite fron
 
 The backend exposes RESTful API endpoints secured with JWT authentication and supports file uploads and task data export using `exceljs`.
 
+### ERD Diagram
+
+![](./images/erd-diagram.png)
+
 ---
 
 ## Features
