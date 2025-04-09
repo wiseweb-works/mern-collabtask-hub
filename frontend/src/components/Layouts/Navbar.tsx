@@ -21,7 +21,7 @@ const Navbar = ({ activeMenu }: NavbarProps) => {
         )}
       </button>
 
-      <h2 className="text-lg font-medium text-black">Expense Tracker</h2>
+      <h2 className="text-lg font-medium text-black">Collaborative Task HUB</h2>
 
       {openSideMenu && (
         <div className="fixed top-[61px] -ml-4 bg-white">

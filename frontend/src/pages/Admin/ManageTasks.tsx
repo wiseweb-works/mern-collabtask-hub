@@ -74,8 +74,8 @@ const ManageTasks = () => {
       link.parentNode?.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Error downloading expense details:", error);
-      toast.error("Failed to download expense details. Please try again.");
+      console.error("Error downloading tasks details:", error);
+      toast.error("Failed to download tasks details. Please try again.");
     }
   };
 
