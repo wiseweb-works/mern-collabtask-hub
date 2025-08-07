@@ -14,11 +14,11 @@
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
+    "dotenv": "^17.2.1",
     "exceljs": "^4.4.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.13.1",
-    "multer": "^2.0.1"
+    "mongoose": "^8.17.1",
+    "multer": "^2.0.2"
   }
 }
